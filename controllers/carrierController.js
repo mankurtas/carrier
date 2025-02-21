@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const carriers = JSON.parse(fs.readFileSync(`../data/carrier-data.json`));
+const carriers = JSON.parse(fs.readFileSync('./data/carrier-data.json'));
 
 exports.getAllCarrierData = (req, res) => {
   
