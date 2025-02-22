@@ -1,10 +1,10 @@
 const express = require('express');
 const carrierController = require('../controllers/carrierController');
 
-const {getAllCarrierData} = carrierController;
+const {getAllCarrierData, getDistance} = carrierController;
 
 const router = express.Router();
 
-router.route('/').get(getAllCarrierData);
+router.route('/').get(getAllCarrierData).post(getDistance);
 
 module.exports = router;
