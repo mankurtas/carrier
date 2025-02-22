@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { json } = require('stream/consumers');
 
 const carriers = JSON.parse(fs.readFileSync('./data/carrier-data.json'));
 
@@ -21,8 +22,6 @@ exports.getAllCarrierData = (req, res) => {
 
 exports.getDistance = (req, res) => {
 
-    // console.log(req.body);
-   
     const {pickup_postcode, delivery_postcode, vehicle} = req.body;
 
     const pickup = parseInt(pickup_postcode);
@@ -63,6 +62,25 @@ exports.getDistance = (req, res) => {
             vehicle,
             finalPrice,
         },
+    });
+
+};
+
+exports.getBestPrice = (req, res) => {
+    
+    const {pickup_postcode, delivery_postcode, carrier_name } = req.body;
+    
+    const carrier = carriers.find(one => one.carrier_name === carrier_name);
+    const base_price = carrier.base_price;
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            pickup_postcode,
+            delivery_postcode,
+            carrier_name,
+            base_price,
+        }
     });
 
 };
