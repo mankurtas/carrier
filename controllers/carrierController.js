@@ -84,3 +84,57 @@ exports.getBestPrice = (req, res) => {
     });
 
 };
+
+exports.getPriceList = (req, res) => {
+    const {pickup_postcode, delivery_postcode, vehicle} = req.body;
+
+    const pickup = parseInt(pickup_postcode);
+    const delivery = parseInt(delivery_postcode);
+    
+    const distance = Math.abs(pickup - delivery);
+
+    const vehicleAttribute = [{vehcile: "bicycle", price_index: 1.1}, 
+        {vehcile: "motorbike", price_index: 1.15},
+        {vehcile: "parcel_car", price_index: 1.2},
+        {vehcile: "small_van", price_index: 1.3},
+        {vehcile: "large_van", price_index: 1.4}
+    ];
+
+    const vehcileType = vehicleAttribute.find(one => one.vehcile === vehicle);
+
+    const priceIndex = vehcileType.price_index;
+
+    let priceList = [];
+
+    carriers.forEach(carrier => {
+        
+        carrier.services.forEach(item => {
+            item.vehicles.forEach(car => {
+
+                if (car === vehicle){
+                    let servicePrice = (distance * priceIndex * carrier.base_price).toFixed(2);
+                    
+                    priceList.push({service:`${carrier.carrier_name}`, 
+                        price: `${servicePrice}`,
+                        delivery_time:`${item.delivery_time}`,
+                    });
+                    
+                }
+            })
+        })
+
+    });
+
+    priceList.sort((a, b) => a.price - b.price)
+
+    res.status(200).json({
+        status: "success",
+        data: {
+            pickup_postcode,
+            delivery_postcode,
+            vehicle,
+            priceList,
+        }
+    });
+
+};
